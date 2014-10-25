@@ -6,6 +6,9 @@ require "postgresql-types/money"
 require "postgresql-types/geography"
 require "postgresql-types/geometry"
 
+require 'postgresql-types/railtie'
+
 module PostgresqlTypes
-  # Your code goes here...
+
+
 end
