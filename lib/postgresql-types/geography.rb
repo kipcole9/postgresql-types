@@ -16,12 +16,12 @@ module ActiveRecord
         return value unless value.present?
         if value.is_a?(Hash)
           lat = value[:lat] || value[:latitude]
-          lon = value[:lon] || value[:longitude]
+          lon = value[:lon] || value[:longitude] || value[:lng]
         elsif value.is_a?(Array)
           lat = value.first
           lon = value.last
         end
-        lat && lon ? FACTORY.point(lon, lat) : value
+        lat && lon ? FACTORY.point(lon.to_f, lat.to_f) : value
       end
       
       def type_cast_from_database(value)
