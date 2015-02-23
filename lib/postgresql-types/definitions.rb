@@ -38,59 +38,6 @@ module ActiveRecord
   end
 end
 
-# Enable extensions in a given SCHEMA either supplied or
-# defined in database configuration
-module ActiveRecord
-  module ConnectionAdapters
-    class PostgreSQLAdapter 
-      def enable_extension(name, options = {})
-        schema = options[:schema] || Rails.configuration.database_configuration[Rails.env]['extensions_schema']
-        exec_query("CREATE EXTENSION IF NOT EXISTS \"#{name}\" #{' SCHEMA ' + schema if schema}").tap {
-          reload_type_map
-        }
-      end
-      
-      def clear_cache_for_search_path!(search_path)
-        @statements.clear_for_search_path(search_path)
-      end
-      
-      def prepare_column_options(column, types)
-        spec = {}
-        spec[:name]      = column.name.inspect
-        spec[:type]      = column.type.to_s
-        spec[:limit]     = column.limit.inspect if types[column.type] && column.limit != types[column.type][:limit]
-        spec[:precision] = column.precision.inspect if column.precision
-        spec[:scale]     = column.scale.inspect if column.scale
-        spec[:null]      = 'false' unless column.null
-        spec[:default]   = schema_default(column) if column.has_default?
-        spec.delete(:default) if spec[:default].nil?
-        spec[:array] = 'true' if column.respond_to?(:array) && column.array
-        spec[:default] = "\"#{column.default_function}\"" if column.default_function
-        sql_type_without_schema = column.sql_type.split('.').last
-        if enum_types.include?(sql_type_without_schema) || composite_types.include?(sql_type_without_schema) || domain_types.include?(sql_type_without_schema)
-          spec[:type] = sql_type_without_schema 
-          spec.delete(:limit)
-        end
-        spec
-      end
-      
-      class StatementPool < ConnectionAdapters::StatementPool
-        def clear_for_search_path(search_path)
-          cache.each_key do |key|
-            path_key = key.split('-').first
-            if path_key.gsub(' ','') == search_path.gsub(' ','')
-              # puts "Deleting statement cache entry #{key}"
-              delete(key)
-            else
-              puts "SHOULD HAVE DELETED #{path_key} given #{search_path}" if path_key =~ /test/
-            end 
-          end
-        end
-      end
-    end
-  end
-end
-
 module ActiveRecord
   module ConnectionAdapters
     class PostgreSQLAdapter < AbstractAdapter
