@@ -88,7 +88,7 @@ class Money
     end
   else
     def to_currency(to_currency_code, options = {})
-      raise NotImpementedError, "Conversion can only occur is an ExchangeRate class is available"
+      raise NotImpementedError, "Conversion can only occur if an ExchangeRate class is available"
     end
   end
   alias :convert_to :to_currency
@@ -119,6 +119,30 @@ module ActiveRecord
     class Currency < Value
       include Mutable
       CURRENCY_DB_REGEXP = /(\w*),([+-]?\d+(\.\d+)?)/
+      
+      def self.as_json(options = {})
+       {
+         properties:  {
+            amount: {
+              type: :number, 
+              description: I18n.t("schema.property.amount")
+            },
+            currency: {
+              type: :string, 
+              default: @@default_currency,
+              description: I18n.t("schema.property.currency")
+            },
+            formatted: {
+              type: :string, 
+              readonly: true,
+              description: I18n.t("schema.property.currency")
+            }
+          },
+          required: [
+            :amount
+          ]
+        }
+      end
 
       def type
         :currency

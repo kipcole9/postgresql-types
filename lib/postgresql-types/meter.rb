@@ -5,6 +5,16 @@ module ActiveRecord
     class Meter < Value
       include Mutable
 
+      def self.as_json(options = {})
+        h = Hash.new
+        h[:properties] = Hash.new
+        h[:properties][:meter] = {
+          type: :number, 
+          description: I18n.t("schema.property.meter")
+        }
+        h
+      end
+      
       def type
         :meter
       end
