@@ -2,8 +2,8 @@ require 'rgeo'
 
 module ActiveRecord
   module Type
-    class Geography < Value
-      include Mutable
+    class Geography < ActiveModel::Type::Value # :nodoc:
+      include ActiveModel::Type::Helpers::Mutable
       
       FACTORY = ::RGeo::Geographic.spherical_factory(
         :has_z_coordinate => true,
@@ -42,7 +42,7 @@ module ActiveRecord
         :geography
       end
 
-      def type_cast_from_user(value)
+      def cast(value)
         return value unless value.present?
         if value.is_a?(Hash)
           lat = value[:lat] || value[:latitude]
@@ -56,11 +56,11 @@ module ActiveRecord
         lat && lon ? FACTORY.point(lon.to_f, lat.to_f, alt.to_f) : value
       end
       
-      def type_cast_from_database(value)
+      def deserialize(value)
         value ? FACTORY.parse_wkb(value) : nil
       end
 
-      def type_cast_for_database(value)
+      def serialize(value)
         value ? value.as_binary : nil
       end
     end

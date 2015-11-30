@@ -2,8 +2,8 @@ require 'rgeo'
 
 module ActiveRecord
   module Type
-    class Geometry < Value
-      include Mutable
+    class Geometry < ActiveModel::Type::Value # :nodoc:
+      include ActiveModel::Type::Helpers::Mutable
       
       FACTORY = ::RGeo::Geographic.simple_mercator_factory(
         :wkb_parser => {:support_ewkb => true}, :wkb_generator => {:type_format => :ewkb, :hex_format => true, :emit_ewkb_srid => true})
@@ -13,7 +13,7 @@ module ActiveRecord
         :geometry
       end
       
-      def type_cast_from_user(value)
+      def cast(value)
         return value unless value.present?
         if value.is_a?(Hash)
           lat = value[:lat] || value[:latitude]
@@ -25,11 +25,11 @@ module ActiveRecord
         lat && lon ? FACTORY.point(lon, lat) : nil
       end
 
-      def type_cast_from_database(value)
+      def deserialize(value)
         value ? FACTORY.unproject(PROJECTION_FACTORY.parse_wkb(geo)) : nil
       end
 
-      def type_cast_for_database(value)
+      def serialize(value)
         value ? FACTORY.project(value).as_binary.unpack('H*').first : nil
       end
     end

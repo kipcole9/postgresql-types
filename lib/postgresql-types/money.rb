@@ -116,8 +116,9 @@ end
 
 module ActiveRecord
   module Type
-    class Currency < Value
-      include Mutable
+    class Currency < ActiveModel::Type::Value # :nodoc:
+      include ActiveModel::Type::Helpers::Mutable
+      
       CURRENCY_DB_REGEXP = /(\w*),([+-]?\d+(\.\d+)?)/
       
       def self.as_json(options = {})
@@ -148,11 +149,11 @@ module ActiveRecord
         :currency
       end
       
-      def type_cast_from_user(value)
+      def cast(value)
         Money.new(value)
       end
 
-      def type_cast_from_database(value)
+      def deserialize(value)
         return nil unless value.present?
         if matched = value.match(CURRENCY_DB_REGEXP)
           Money.new(matched[1], matched[2])
@@ -161,7 +162,7 @@ module ActiveRecord
         end
       end
 
-      def type_cast_for_database(value)
+      def serialize(value)
         value ? value.to_db : nil
       end
     end
