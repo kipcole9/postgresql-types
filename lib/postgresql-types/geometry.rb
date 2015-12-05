@@ -63,7 +63,7 @@ module ActiveRecord
       end
 
       def serialize(value)
-        value ? FACTORY.project(value).as_binary.unpack('H*').first : nil
+        value && value.is_a?(RGeo::Geographic::ProjectedPointImpl) ? FACTORY.project(value).as_binary.unpack('H*').first : nil
       end
     end
   end
