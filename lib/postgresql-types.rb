@@ -3,6 +3,7 @@ require 'active_support'
 
 require "postgresql-types/meter"
 require "postgresql-types/money"
+require "postgresql-types/rgeo"
 require "postgresql-types/geography"
 require "postgresql-types/geometry"
 

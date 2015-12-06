@@ -1,5 +1,3 @@
-require 'rgeo'
-
 module ActiveRecord
   module Type
     class Geometry < ActiveModel::Type::Value # :nodoc:

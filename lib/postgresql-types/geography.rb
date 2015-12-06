@@ -1,5 +1,3 @@
-require 'rgeo'
-
 module ActiveRecord
   module Type
     class Geography < ActiveModel::Type::Value # :nodoc:
