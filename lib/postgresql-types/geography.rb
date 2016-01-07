@@ -13,21 +13,25 @@ module ActiveRecord
         })
       
         # json-schema format
-      def self.as_json(options = {})
+      def self.as_json_schema(options = {})
         {
+          type: :object,
           properties: {
             latitude: {
               type: :number, 
-              description: I18n.t("schema.property.latitude")
+              description: I18n.t("schema.property.latitude"),
+              format: :float
             },
             longitude: {
               type: :number, 
-              description: I18n.t("schema.property.longitude")
+              description: I18n.t("schema.property.longitude"),
+              format: :float
             },
             altitude: {
               type: :number,
               default: 0,
-              description: I18n.t("schema.property.altitude")
+              description: I18n.t("schema.property.altitude"),
+              format: :float
             }
           },
           required: [

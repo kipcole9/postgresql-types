@@ -7,9 +7,17 @@ module RGeo
         point: {
           latitude:   self.latitude,
           longitude:  self.longitude,
-          altitude:   self.z
+          altitude:   self.altitude
         }
       }
+    end
+  end
+end
+
+module RGeo
+  module Altitude
+    def altitude
+      self.z
     end
   end
 end
@@ -17,8 +25,10 @@ end
 
 class RGeo::Geographic::ProjectedPointImpl
   include ::RGeo::Json
+  include ::RGeo::Altitude
 end
 
 class RGeo::Geographic::SphericalPointImpl
   include ::RGeo::Json
+  include ::RGeo::Altitude
 end

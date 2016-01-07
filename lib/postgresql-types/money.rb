@@ -121,8 +121,9 @@ module ActiveRecord
       
       CURRENCY_DB_REGEXP = /(\w*),([+-]?\d+(\.\d+)?)/
       
-      def self.as_json(options = {})
+      def self.as_json_shema(options = {})
        {
+         type: :object,
          properties:  {
             amount: {
               type: :number, 

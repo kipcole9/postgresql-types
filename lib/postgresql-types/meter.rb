@@ -5,14 +5,10 @@ module ActiveRecord
     class Meter < ActiveModel::Type::Value # :nodoc:
       include ActiveModel::Type::Helpers::Mutable
 
-      def self.as_json(options = {})
+      def self.as_json_schema(options = {})
         {
-          properties: {
-            meter: {
-              type:         :number,
-              description:  I18n.t("schema.property.meter")
-            }
-          }
+          type:         :number,
+          description:  I18n.t("schema.property.meter")
         }
       end
       
